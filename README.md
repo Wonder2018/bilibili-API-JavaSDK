@@ -19,7 +19,11 @@
 
 本项目为 [社会易姐 QwQ(SocialSisterYi)](https://github.com/SocialSisterYi) 所收集整理的 [Bilibili API](https://github.com/SocialSisterYi/bilibili-API-collect) 文档的 Java 封装。项目刚刚开始施工，还没有使用文档。如需了解 SDK 使用方法，请参考 Javadoc。
 
-> **_注：项目仅供研究学习使用，切勿滥用！_**
+> **_注：_**
+>
+> **_1. 项目仅供研究学习使用，切勿滥用！_**
+>
+> **_2. 本 SDK 并非官方软件，不保证长期稳定性和可用性。只提供不定期修补维护。_**
 
 ---
 

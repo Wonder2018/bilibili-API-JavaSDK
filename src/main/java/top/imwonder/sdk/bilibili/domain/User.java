@@ -1,6 +1,7 @@
 package top.imwonder.sdk.bilibili.domain;
 
 import org.apache.http.client.CookieStore;
+import org.apache.http.impl.client.CloseableHttpClient;
 
 import lombok.Data;
 
@@ -11,6 +12,8 @@ import lombok.Data;
 public class User {
 
     private final String UID;
+
+    private CloseableHttpClient client;
 
     /**uid MD5校验码 */
     private String uidCheckMD5;

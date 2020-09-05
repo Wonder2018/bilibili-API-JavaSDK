@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
@@ -23,7 +24,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
 import lombok.extern.slf4j.Slf4j;
-import top.imwonder.sdk.bilibili.domain.User;
+import top.imwonder.util.MessageUtil;
 
 /**
  * 发送请求
@@ -42,8 +43,8 @@ public class HttpRequestUtil {
         try {
             httpClient.close();
         } catch (IOException e) {
-            log.info("Can not Close HttpClient!");
-            log.debug("Something may useful: {}", e.getMessage());
+            log.info(MessageUtil.getMsg("util.httprequest.error.closeclient"));
+            log.debug(MessageUtil.getMsg("error.debug.simple", e.getMessage()));
         }
         httpClient = HttpClients.createDefault();
     }
@@ -111,22 +112,8 @@ public class HttpRequestUtil {
      */
     public static CloseableHttpResponse doGet(URI uri, boolean autoClose)
             throws ClientProtocolException, IOException, URISyntaxException {
-        String ua = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36";
         HttpGet get = new HttpGet(uri);
-        get.setHeader("Connection", "keep-alive");
-        get.setHeader("User-Agent", ua);
         return doRequest(get, autoClose);
-    }
-
-    /**
-     * 发送需要登录的 Get 请求
-     *
-     * @param user   已经登录的 {@link top.imwonder.sdk.bilibili.domain.User User} 对象
-     * @param params 请求参数
-     * @return 返回值
-     */
-    public static CloseableHttpResponse doGet(User user, Map<String, String> params) {
-        return null;
     }
 
     /**
@@ -176,7 +163,8 @@ public class HttpRequestUtil {
      * @throws IOException
      * @throws URISyntaxException
      */
-    public static CloseableHttpResponse doPost(URI uri) throws ClientProtocolException, IOException, URISyntaxException {
+    public static CloseableHttpResponse doPost(URI uri)
+            throws ClientProtocolException, IOException, URISyntaxException {
         return doPost(uri, true);
     }
 
@@ -192,22 +180,8 @@ public class HttpRequestUtil {
      */
     public static CloseableHttpResponse doPost(URI uri, boolean autoClose)
             throws ClientProtocolException, IOException, URISyntaxException {
-        String ua = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36";
         HttpPost post = new HttpPost(uri);
-        post.setHeader("Connection", "keep-alive");
-        post.setHeader("User-Agent", ua);
         return doRequest(post, autoClose);
-    }
-
-    /**
-     * 发送需要登录的 Post 请求
-     *
-     * @param user   已经登录的 {@link top.imwonder.sdk.bilibili.domain.User User} 对象
-     * @param params 请求参数
-     * @return 返回值
-     */
-    public static CloseableHttpResponse doPost(User user, Map<String, String> params) {
-        return null;
     }
 
     public static CloseableHttpResponse doRequest(HttpRequestBase req) throws ClientProtocolException, IOException {
@@ -216,6 +190,8 @@ public class HttpRequestUtil {
 
     public static CloseableHttpResponse doRequest(HttpRequestBase req, boolean autoClose)
             throws ClientProtocolException, IOException {
+        resetHttpClient();
+        setComonHeader(req);
         if (autoClose) {
             try (CloseableHttpResponse httpResponse = httpClient.execute(req)) {
                 return httpResponse;
@@ -223,6 +199,13 @@ public class HttpRequestUtil {
         } else {
             return httpClient.execute(req);
         }
+    }
+
+    public static void setComonHeader(HttpRequestBase req) {
+        String ua = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36";
+        req.setHeader(HttpHeaders.CONNECTION, "keep-alive");
+        req.setHeader(HttpHeaders.USER_AGENT, ua);
+        req.setHeader(HttpHeaders.REFERER, "https://www.bilibili.com");
     }
 
     public static Map<String, Object> toResultMap(HttpResponse res)

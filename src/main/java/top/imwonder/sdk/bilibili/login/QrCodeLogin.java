@@ -8,20 +8,21 @@ import java.util.Map;
 import com.google.zxing.WriterException;
 
 import org.apache.http.Header;
-import org.apache.http.HeaderElement;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import top.imwonder.sdk.bilibili.domain.User;
 import top.imwonder.sdk.bilibili.enumeration.QrCodeStatus;
 import top.imwonder.sdk.bilibili.exception.BadResultException;
 import top.imwonder.sdk.bilibili.exception.HttpRequestFailedException;
 import top.imwonder.sdk.bilibili.util.HttpRequestUtil;
 import top.imwonder.sdk.bilibili.util.QrCodeUtil;
+import top.imwonder.util.MessageUtil;
 
 /**
  * 二维码登录接口，已实现 {@link Runnable Runnable}
@@ -29,8 +30,7 @@ import top.imwonder.sdk.bilibili.util.QrCodeUtil;
  */
 @Slf4j
 @Getter
-@Setter
-public final class QrCodeLogin implements Runnable {
+public final class QrCodeLogin extends AbstractLogin implements Runnable {
 
     /** 获取二维码API */
     public final static String GET_QR_CODE_URL = "https://passport.bilibili.com/qrcode/getLoginUrl";
@@ -39,9 +39,11 @@ public final class QrCodeLogin implements Runnable {
     public final static String AUTH_QR_CODE_URL = "http://passport.bilibili.com/qrcode/getLoginInfo";
 
     /** 自动二维码登录事务 */
+    @Setter
     private QrCodeLoginTask qrLoginTask;
 
     /** 二维码大小，默认 300px */
+    @Setter
     private int qrCodeSize = 300;
 
     /** 二维码状态 */
@@ -61,9 +63,6 @@ public final class QrCodeLogin implements Runnable {
 
     /** 二维码图片 */
     private BufferedImage qrCode;
-
-    /** 登录成功的用户 */
-    private User user;
 
     /**
      * 获取登录二维码
@@ -85,9 +84,11 @@ public final class QrCodeLogin implements Runnable {
      * @throws BadResultException
      */
     public String loginForPath() throws HttpRequestFailedException, BadResultException {
-        try (CloseableHttpResponse res = HttpRequestUtil.doGet(GET_QR_CODE_URL, null, false)) {
+        HttpGet get = new HttpGet(GET_QR_CODE_URL);
+        HttpRequestUtil.setComonHeader(get);
+        try (CloseableHttpResponse res = httpClient.execute(get)) {
             Map<String, Object> result = HttpRequestUtil.toResultMap(res);
-            if ((double) result.get("code") != 0) {
+            if ((Double) result.get("code") != 0) {
                 throw new BadResultException((String) result.get("message"));
             }
             timestemp = (long) (double) result.get("ts");
@@ -97,22 +98,30 @@ public final class QrCodeLogin implements Runnable {
             oauthKey = data.get("oauthKey");
             return loginPath;
         } catch (ClientProtocolException e) {
-            log.info("May not Happen（；´д｀）ゞ");
-            log.debug("Something may helpful: {}", e.getMessage());
+            log.info(MessageUtil.getMsg("error.unexpected"));
+            log.debug(MessageUtil.getMsg("error.debug.simple", e.getMessage()));
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
         }
-        throw new HttpRequestFailedException(
-                "Failed to generate Qr code, more information will be output in debug mode!");
+        throw new HttpRequestFailedException(MessageUtil.getMsg("login.qrcode.error.getfailed"));
     }
 
-    private QrCodeStatus refreshStatus() throws HttpRequestFailedException, BadResultException {
+    public QrCodeStatus refreshStatus() throws HttpRequestFailedException, BadResultException {
+        if (oauthKey == null) {
+            throw new HttpRequestFailedException(MessageUtil.getMsg("login.qrcode.error.noqrcode"));
+        }
         URIBuilder uri = new URIBuilder();
         uri.setPath(AUTH_QR_CODE_URL);
         uri.setParameter("oauthKey", oauthKey);
-        try (CloseableHttpResponse res = HttpRequestUtil.doPost(uri.build(), false)) {
+        HttpPost post = null;
+        try {
+            post = new HttpPost(uri.build());
+        } catch (URISyntaxException e) {
+            log.info(MessageUtil.getMsg("error.unexpected"));
+            log.debug(MessageUtil.getMsg("error.debug.simple", e.getMessage()));
+        }
+        HttpRequestUtil.setComonHeader(post);
+        try (CloseableHttpResponse res = httpClient.execute(post)) {
             Map<String, Object> result = HttpRequestUtil.toResultMap(res);
             Double code = (Double) result.get("code");
             if ((code != null && code != 0) || result.get("data") == null) {
@@ -124,40 +133,17 @@ public final class QrCodeLogin implements Runnable {
                 status = QrCodeStatus.query((Double) data);
             } else if (data instanceof Map) {
                 Header headers[] = res.getHeaders("Set-Cookie");
-                for (Header header : headers) {
-                    HeaderElement firstElement = header.getElements()[0];
-                    switch (firstElement.getName()) {
-                        // TODO fix cookies order!
-                        case "DedeUserID":
-                            user = new User(firstElement.getValue());
-                            break;
-                        case "DedeUserID__ckMd5":
-                            user.setUidCheckMD5(firstElement.getValue());
-                            break;
-                        case "SESSDATA":
-                            user.setSessdata(firstElement.getValue());
-                            break;
-                        case "bili_jct":
-                            user.setCsrfToken(firstElement.getValue());
-                            break;
-                        default:
-                            break;
-                    }
-                }
-                // CookieStore cs = new Cookies
+                success(headers);
                 status = QrCodeStatus.SUCCESS;
             }
             return status;
         } catch (ClientProtocolException e) {
-            log.info("May not Happen（；´д｀）ゞ");
-            log.debug("Something may helpful: {}", e.getMessage());
+            log.info(MessageUtil.getMsg("error.unexpected"));
+            log.debug(MessageUtil.getMsg("error.debug.simple", e.getMessage()));
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
         }
-        throw new HttpRequestFailedException(
-                "Failed to check Qr code status, more information will be output in debug mode!");
+        throw new HttpRequestFailedException(MessageUtil.getMsg("login.qrcode.error.checkfailed"));
     }
 
     /**
@@ -189,7 +175,7 @@ public final class QrCodeLogin implements Runnable {
      */
     public void syncAutoCheck(QrCodeLoginTask task, long freq) {
         if (task == null) {
-            log.warn("Parameter 'qrLoginTask' is not set, no operation will be performed.");
+            log.warn(MessageUtil.getMsg("login.qrcode.warn.notask"));
             return;
         }
         while (true) {
@@ -199,8 +185,8 @@ public final class QrCodeLogin implements Runnable {
                     try {
                         Thread.sleep(freq);
                     } catch (Exception e) {
-                        log.info("May not Happen（；´д｀）ゞ");
-                        log.debug("Something may helpful: {}", e.getMessage());
+                        log.info(MessageUtil.getMsg("error.unexpected"));
+                        log.debug(MessageUtil.getMsg("error.debug.simple", e.getMessage()));
                     }
                     if (status == QrCodeStatus.WAITING_FOR_CONFIRM) {
                         task.scanned();
@@ -209,8 +195,8 @@ public final class QrCodeLogin implements Runnable {
                 task.success(user);
                 break;
             } catch (WriterException e) {
-                log.info("May not Happen（；´д｀）ゞ");
-                log.debug("Something may helpful: {}", e.getMessage());
+                log.info(MessageUtil.getMsg("error.unexpected"));
+                log.debug(MessageUtil.getMsg("error.debug.simple", e.getMessage()));
                 task.onError(e);
                 break;
             }
