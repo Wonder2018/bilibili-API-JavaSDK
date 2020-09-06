@@ -3,7 +3,7 @@ package top.imwonder.sdk.bilibili.domain;
 import lombok.Data;
 
 @Data
-public class ApiData<T> {
+public class ApiData<T extends AbstractData> {
 
     private Integer code;
 

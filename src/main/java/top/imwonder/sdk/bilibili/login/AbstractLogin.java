@@ -1,3 +1,9 @@
+/*
+ * @Author: Wonder2019
+ * @Date: 2020-09-06 14:20:26
+ * @Last Modified by:   Wonder2019
+ * @Last Modified time: 2020-09-06 14:20:26
+ */
 package top.imwonder.sdk.bilibili.login;
 
 import org.apache.http.Header;

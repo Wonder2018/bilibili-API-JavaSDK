@@ -12,7 +12,7 @@ public enum QrCodeStatus {
 
     private final Double code;
 
-    private final String status;
+    private final String state;
 
     private static Map<Double, QrCodeStatus> enumMap;
 
@@ -23,9 +23,9 @@ public enum QrCodeStatus {
         }
     }
 
-    QrCodeStatus(Double code, String status) {
+    QrCodeStatus(Double code, String state) {
         this.code = code;
-        this.status = status;
+        this.state = state;
     }
 
     public static QrCodeStatus query(Double code) {

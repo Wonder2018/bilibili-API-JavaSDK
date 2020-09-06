@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="http://i0.hdslb.com/bfs/album/1ba8228cc208a12ac17f73a160081a0918ab7d14.png" width="250" height="200"/>
+    <img src="https://i0.hdslb.com/bfs/album/1ba8228cc208a12ac17f73a160081a0918ab7d14.png" width="250" height="200"/>
 <p/>
 <h1 align="center">哔哩哔哩API - JavaSDK</h1>
 <p align="center">
@@ -24,6 +24,7 @@
 > **_1. 项目仅供研究学习使用，切勿滥用！_**
 >
 > **_2. 本 SDK 并非官方软件，不保证长期稳定性和可用性。只提供不定期修补维护。_**
+
 ---
 
 计划整理分类&目录：
@@ -34,7 +35,7 @@
     -   [x] 二维码登录
     -   [ ] 密码&短信登录
     -   [ ] qq&微博登录
-    -   [ ] 登录基本信息
+    -   [x] 登录基本信息
     -   [ ] 个人中心
 -   [ ] 消息中心
     -   [ ] 通知类消息
@@ -74,7 +75,7 @@
     -   [ ] 分区
     -   [ ] 基本信息
     -   [ ] 点赞&投币&收藏
-    -   文集基本信息
+    -   [ ] 文集基本信息
 -   [ ] 音频
     -   [ ] 歌曲基本信息
     -   [ ] 歌单&音频收藏夹详细信息
@@ -186,7 +187,7 @@
 
 <img src="http://www.imwonder.top/assets/img/index/face.webp" />
 
-**--by [Wonder2020](http://www.imwonder.top)**
+**Powered with ❤ by [Wonder2020](http://www.imwonder.top)**
 
 **相关项目**：
 

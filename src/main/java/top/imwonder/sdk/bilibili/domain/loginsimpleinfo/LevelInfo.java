@@ -1,14 +1,14 @@
-package top.imwonder.sdk.bilibili.domain.user;
+package top.imwonder.sdk.bilibili.domain.loginsimpleinfo;
 
 import com.google.gson.annotations.SerializedName;
 
-import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Setter;
+import lombok.EqualsAndHashCode;
+import top.imwonder.sdk.bilibili.domain.AbstractData;
 
 @Data
-@Setter(AccessLevel.NONE)
-public class LevelInfo {
+@EqualsAndHashCode(callSuper=false)
+public class LevelInfo extends AbstractData {
 
     @SerializedName("current_level")
     private Integer currentLevel;

@@ -1,3 +1,9 @@
+/*
+ * @Author: Wonder2019
+ * @Date: 2020-09-06 14:20:46
+ * @Last Modified by: Wonder2019
+ * @Last Modified time: 2020-09-06 15:52:33
+ */
 package top.imwonder.sdk.bilibili.util;
 
 import java.io.IOException;
@@ -25,7 +31,10 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
 import lombok.extern.slf4j.Slf4j;
+import top.imwonder.sdk.bilibili.domain.AbstractData;
 import top.imwonder.sdk.bilibili.domain.ApiData;
+import top.imwonder.sdk.bilibili.domain.User;
+import top.imwonder.sdk.bilibili.exception.HttpRequestFailedException;
 import top.imwonder.util.MessageUtil;
 
 /**
@@ -186,10 +195,27 @@ public class HttpRequestUtil {
         return doRequest(post, autoClose);
     }
 
+    /**
+     * 使用公共虚拟浏览器发送请求，默认自动关闭连接。
+     *
+     * @param req http请求
+     * @return http响应
+     * @throws ClientProtocolException
+     * @throws IOException
+     */
     public static CloseableHttpResponse doRequest(HttpRequestBase req) throws ClientProtocolException, IOException {
         return doRequest(req, true);
     }
 
+    /**
+     * 使用公共虚拟浏览器发送请求
+     *
+     * @param req       http请求
+     * @param autoClose 是否自动关闭连接
+     * @return http响应
+     * @throws ClientProtocolException
+     * @throws IOException
+     */
     public static CloseableHttpResponse doRequest(HttpRequestBase req, boolean autoClose)
             throws ClientProtocolException, IOException {
         resetHttpClient();
@@ -203,6 +229,51 @@ public class HttpRequestUtil {
         }
     }
 
+    /**
+     * 使用用户私有虚拟浏览器{@link top.imwonder.sdk.bilibili.domain.User#getClient
+     * HttpClient}发送请求，并将json回复反序列化为封装的{@link top.imwonder.sdk.bilibili.domain.ApiData
+     * ApiData}&lt;{@link top.imwonder.sdk.bilibili.domain.AbstractData T&nbsp;
+     * extends &nbsp AbstractData}&gt;。
+     *
+     * @param <T>
+     * @param user 登录用户
+     * @param api  登录接口
+     * @return {@link top.imwonder.sdk.bilibili.domain.ApiData
+     *         ApiData}&lt;{@link top.imwonder.sdk.bilibili.domain.AbstractData
+     *         T&nbsp; extends &nbsp AbstractData}&gt;
+     * @throws HttpRequestFailedException 用户未登录时抛出
+     *
+     * @see top.imwonder.sdk.bilibili.util.HttpRequestUtil#toApiData(HttpResponse, Type)
+     */
+    public static <T extends AbstractData> T loadInfo(User user, String api) throws HttpRequestFailedException {
+        HttpGet get = new HttpGet(api);
+        HttpRequestUtil.setComonHeader(get);
+        try (CloseableHttpResponse res = user.getClient().execute(get)) {
+            ApiData<T> result = HttpRequestUtil.toApiData(res, new TypeToken<ApiData<T>>() {
+            }.getType());
+            return result.getData();
+        } catch (ClientProtocolException e) {
+            log.info(MessageUtil.getMsg("error.unexpected"));
+            log.debug(MessageUtil.getMsg("error.debug.simple", e.getMessage()));
+        } catch (IOException e) {
+            log.info(MessageUtil.getMsg("error.unexpected"));
+            log.debug(MessageUtil.getMsg("error.debug.simple", e.getMessage()));
+        } catch (NullPointerException e) {
+            throw new HttpRequestFailedException(MessageUtil.getMsg("login.userinfo.nologin"));
+        }
+        throw new HttpRequestFailedException(MessageUtil.getMsg("error.unexpected"));
+    }
+
+    /**
+     * 插入通用请求头包括
+     * <ol>
+     * <li>FireFox UA</li>
+     * <li>keep-alive</li>
+     * <li>referer https://www.bilibili.com</li>
+     * </ol>
+     *
+     * @param req http请求
+     */
     public static void setComonHeader(HttpRequestBase req) {
         String ua = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36";
         req.setHeader(HttpHeaders.CONNECTION, "keep-alive");
@@ -210,13 +281,44 @@ public class HttpRequestUtil {
         req.setHeader(HttpHeaders.REFERER, "https://www.bilibili.com");
     }
 
+    /**
+     * 将json回复反序列化为{@link java.util.Map Map&lt;String, Object&gt;}，无法处理已经关闭的连接。
+     *
+     * @param res http响应
+     * @return {@link java.util.Map Map&lt;String, Object&gt;}
+     * @throws JsonSyntaxException
+     * @throws ParseException
+     * @throws IOException         连接关闭时抛出
+     */
     public static Map<String, Object> toResultMap(HttpResponse res)
             throws JsonSyntaxException, ParseException, IOException {
         return gson.fromJson(EntityUtils.toString(res.getEntity()), new TypeToken<HashMap<String, Object>>() {
         }.getType());
     }
 
-    public static <T> ApiData<T> toApiData(HttpResponse res, Type type)
+    /**
+     * 将json回复反序列化为封装的{@link top.imwonder.sdk.bilibili.domain.ApiData
+     * ApiData}&lt;{@link top.imwonder.sdk.bilibili.domain.AbstractData T&nbsp;
+     * extends &nbsp AbstractData}&gt;。
+     *
+     * @param <T>  json 回复中data对应的消息类型
+     * @param res  http响应
+     * @param type
+     *             <p>
+     *             反序列化类型，通过以下方式获得
+     *             <p>
+     *             'new TypeToken<ApiData<Type>>(){}.getType()'，
+     *             <p>
+     *             其中 Type 为 data 字段对应的消息类型，
+     *             <p>
+     *             如:'new TypeToken<ApiData<User>>(){}.getType()'
+     * @return {@link top.imwonder.sdk.bilibili.domain.ApiData ApiData&lt; T &gt;}。
+     * @throws JsonSyntaxException
+     * @throws ParseException
+     * @throws IOException
+     * @see top.imwonder.sdk.bilibili.domain.ApiData
+     */
+    public static <T extends AbstractData> ApiData<T> toApiData(HttpResponse res, Type type)
             throws JsonSyntaxException, ParseException, IOException {
         return gson.fromJson(EntityUtils.toString(res.getEntity()), type);
     }

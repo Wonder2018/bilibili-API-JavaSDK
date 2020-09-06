@@ -1,11 +1,14 @@
-package top.imwonder.sdk.bilibili.domain.user;
+package top.imwonder.sdk.bilibili.domain.loginsimpleinfo;
 
 import com.google.gson.annotations.SerializedName;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import top.imwonder.sdk.bilibili.domain.AbstractData;
 
 @Data
-public class Wallet {
+@EqualsAndHashCode(callSuper=false)
+public class Wallet extends AbstractData {
 
     private Integer mid;
 

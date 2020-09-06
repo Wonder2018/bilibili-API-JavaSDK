@@ -1,3 +1,9 @@
+/*
+ * @Author: Wonder2019
+ * @Date: 2020-09-06 14:20:30
+ * @Last Modified by: Wonder2019
+ * @Last Modified time: 2020-09-06 14:53:23
+ */
 package top.imwonder.sdk.bilibili.login;
 
 import java.awt.image.BufferedImage;
@@ -36,7 +42,7 @@ public final class QrCodeLogin extends AbstractLogin implements Runnable {
     public final static String GET_QR_CODE_URL = "https://passport.bilibili.com/qrcode/getLoginUrl";
 
     /** 二维码认证API */
-    public final static String AUTH_QR_CODE_URL = "http://passport.bilibili.com/qrcode/getLoginInfo";
+    public final static String AUTH_QR_CODE_URL = "https://passport.bilibili.com/qrcode/getLoginInfo";
 
     /** 自动二维码登录事务 */
     @Setter
@@ -47,7 +53,7 @@ public final class QrCodeLogin extends AbstractLogin implements Runnable {
     private int qrCodeSize = 300;
 
     /** 二维码状态 */
-    private QrCodeStatus status;
+    private QrCodeStatus state;
 
     /** 二维码创建时间 */
     private long timestemp;
@@ -130,13 +136,13 @@ public final class QrCodeLogin extends AbstractLogin implements Runnable {
             scanTime = (long) (result.get("ts") == null ? 0 : (double) result.get("ts"));
             Object data = result.get("data");
             if (data instanceof Number) {
-                status = QrCodeStatus.query((Double) data);
+                state = QrCodeStatus.query((Double) data);
             } else if (data instanceof Map) {
                 Header headers[] = res.getHeaders("Set-Cookie");
                 success(headers);
-                status = QrCodeStatus.SUCCESS;
+                state = QrCodeStatus.SUCCESS;
             }
-            return status;
+            return state;
         } catch (ClientProtocolException e) {
             log.info(MessageUtil.getMsg("error.unexpected"));
             log.debug(MessageUtil.getMsg("error.debug.simple", e.getMessage()));
@@ -188,7 +194,7 @@ public final class QrCodeLogin extends AbstractLogin implements Runnable {
                         log.info(MessageUtil.getMsg("error.unexpected"));
                         log.debug(MessageUtil.getMsg("error.debug.simple", e.getMessage()));
                     }
-                    if (status == QrCodeStatus.WAITING_FOR_CONFIRM) {
+                    if (state == QrCodeStatus.WAITING_FOR_CONFIRM) {
                         task.scanned();
                     }
                 }

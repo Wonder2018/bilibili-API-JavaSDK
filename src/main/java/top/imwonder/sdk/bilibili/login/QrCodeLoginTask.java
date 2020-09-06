@@ -1,3 +1,9 @@
+/*
+ * @Author: Wonder2019
+ * @Date: 2020-09-06 14:20:34
+ * @Last Modified by:   Wonder2019
+ * @Last Modified time: 2020-09-06 14:20:34
+ */
 package top.imwonder.sdk.bilibili.login;
 
 import java.awt.image.BufferedImage;

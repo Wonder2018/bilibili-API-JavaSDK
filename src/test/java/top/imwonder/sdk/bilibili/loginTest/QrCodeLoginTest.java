@@ -12,7 +12,7 @@ import org.apache.http.util.EntityUtils;
 import org.junit.Test;
 
 import top.imwonder.sdk.bilibili.domain.ApiData;
-import top.imwonder.sdk.bilibili.domain.User;
+import top.imwonder.sdk.bilibili.domain.loginsimpleinfo.LoginUserInfo;
 import top.imwonder.sdk.bilibili.enumeration.QrCodeStatus;
 import top.imwonder.sdk.bilibili.login.QrCodeLogin;
 import top.imwonder.sdk.bilibili.util.ConsoleQrCode;
@@ -69,12 +69,12 @@ public class QrCodeLoginTest {
         Thread.sleep(1000);
         assertEquals(QrCodeStatus.SUCCESS, qcl.refreshStatus());
         System.out.println("测试完毕!");
-        HttpGet get = new HttpGet("http://api.bilibili.com/x/web-interface/nav");
+        HttpGet get = new HttpGet("https://api.bilibili.com/x/web-interface/nav");
         HttpRequestUtil.setComonHeader(get);
         try (CloseableHttpResponse res = qcl.getUser().getClient().execute(get)) {
             String json = EntityUtils.toString(res.getEntity());
             System.out.println(json);
-            ApiData<User> apiData = new Gson().fromJson(json, new TypeToken<ApiData<User>>() {
+            ApiData<LoginUserInfo> apiData = new Gson().fromJson(json, new TypeToken<ApiData<LoginUserInfo>>() {
             }.getType());
             System.out.println(apiData);
         } catch (Exception e) {
