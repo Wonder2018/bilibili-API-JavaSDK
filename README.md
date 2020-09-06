@@ -17,14 +17,13 @@
     </a>
 </p>
 
-本项目为 [社会易姐 QwQ(SocialSisterYi)](https://github.com/SocialSisterYi) 所收集整理的 [Bilibili API](https://github.com/SocialSisterYi/bilibili-API-collect) 文档的 Java 封装。项目刚刚开始施工，还没有使用文档。如需了解 SDK 使用方法，请参考 Javadoc。
+本项目为 [社会易姐 QwQ(SocialSisterYi)](https://github.com/SocialSisterYi) 所收集整理的 [Bilibili API](https://github.com/SocialSisterYi/bilibili-API-collect) 文档的 Java 封装。项目使用 OracleJDK1.8 开发，使用 Maven 编译和管理依赖。开始施工不久，还没有使用文档。如需了解 SDK 使用方法，请参考 Javadoc。
 
 > **_注：_**
 >
 > **_1. 项目仅供研究学习使用，切勿滥用！_**
 >
 > **_2. 本 SDK 并非官方软件，不保证长期稳定性和可用性。只提供不定期修补维护。_**
-
 ---
 
 计划整理分类&目录：
@@ -131,7 +130,7 @@
     -   [ ] 播放&下载地址（视频流）
 -   [ ] 直播
     -   [ ] 直播间基本信息
-    -   [直播分区
+    -   [ ] 直播分区
     -   [ ] 直播间管理
     -   [ ] 直播间操作
     -   [ ] 直播视频流
@@ -148,6 +147,42 @@
     -   [ ] 基于 ip 的地理位置查询
     -   [ ] 获取当前时间戳
     -   [ ] 分区在线人数
+
+---
+
+### 使用方法
+
+1. 下载安装
+
+    ```bash
+    # 创建临时文件夹
+    mkdir temp
+    cd temp
+
+    # 克隆相关代码
+    git clone https://github.com/Wonder2018/imwonder-util.git
+    git clone https://github.com/Wonder2018/bilibili-API-JavaSDK.git
+
+    # 编译安装
+    cd imwonder-util
+    mvn install
+    cd ../bilibili-API-JavaSDK
+    mvn install
+
+    ```
+
+2. 在 pom.xml 中配置依赖
+
+    ```xml
+
+    <!-- bilibili JavaSDK -->
+    <dependency>
+        <groupId>top.imwonder.sdk.bilibili</groupId>
+        <artifactId>bilibili-API-JavaSDK</artifactId>
+        <version>1.0.0</version>
+    </dependency>
+
+    ```
 
 <img src="http://www.imwonder.top/assets/img/index/face.webp" />
 

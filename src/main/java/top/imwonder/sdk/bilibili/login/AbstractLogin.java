@@ -22,12 +22,12 @@ public abstract class AbstractLogin {
     }
 
     protected void success(Header[] headers) {
+        user = new User();
         for (Header header : headers) {
             HeaderElement firstElement = header.getElements()[0];
             switch (firstElement.getName()) {
-                // TODO fix cookies order!
                 case "DedeUserID":
-                    user = new User(firstElement.getValue());
+                    user.setUID(Integer.valueOf(firstElement.getValue()));
                     break;
                 case "DedeUserID__ckMd5":
                     user.setUidCheckMD5(firstElement.getValue());

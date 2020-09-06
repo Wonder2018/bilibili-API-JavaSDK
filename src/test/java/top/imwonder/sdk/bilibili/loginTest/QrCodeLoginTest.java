@@ -2,6 +2,8 @@ package top.imwonder.sdk.bilibili.loginTest;
 
 import static org.junit.Assert.assertEquals;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.google.zxing.WriterException;
 
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -9,6 +11,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.util.EntityUtils;
 import org.junit.Test;
 
+import top.imwonder.sdk.bilibili.domain.ApiData;
+import top.imwonder.sdk.bilibili.domain.User;
 import top.imwonder.sdk.bilibili.enumeration.QrCodeStatus;
 import top.imwonder.sdk.bilibili.login.QrCodeLogin;
 import top.imwonder.sdk.bilibili.util.ConsoleQrCode;
@@ -68,9 +72,13 @@ public class QrCodeLoginTest {
         HttpGet get = new HttpGet("http://api.bilibili.com/x/web-interface/nav");
         HttpRequestUtil.setComonHeader(get);
         try (CloseableHttpResponse res = qcl.getUser().getClient().execute(get)) {
-            System.out.println(EntityUtils.toString(res.getEntity()));
+            String json = EntityUtils.toString(res.getEntity());
+            System.out.println(json);
+            ApiData<User> apiData = new Gson().fromJson(json, new TypeToken<ApiData<User>>() {
+            }.getType());
+            System.out.println(apiData);
         } catch (Exception e) {
-            //TODO: handle exception
+            e.printStackTrace();
         }
     }
 }

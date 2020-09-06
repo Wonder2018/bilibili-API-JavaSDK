@@ -1,6 +1,7 @@
 package top.imwonder.sdk.bilibili.util;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -24,6 +25,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
 import lombok.extern.slf4j.Slf4j;
+import top.imwonder.sdk.bilibili.domain.ApiData;
 import top.imwonder.util.MessageUtil;
 
 /**
@@ -212,5 +214,10 @@ public class HttpRequestUtil {
             throws JsonSyntaxException, ParseException, IOException {
         return gson.fromJson(EntityUtils.toString(res.getEntity()), new TypeToken<HashMap<String, Object>>() {
         }.getType());
+    }
+
+    public static <T> ApiData<T> toApiData(HttpResponse res, Type type)
+            throws JsonSyntaxException, ParseException, IOException {
+        return gson.fromJson(EntityUtils.toString(res.getEntity()), type);
     }
 }

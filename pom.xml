@@ -10,6 +10,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
+        <!-- Util -->
+        <dependency>
+            <groupId>top.imwonder.util</groupId>
+            <artifactId>imwonder-util</artifactId>
+            <version>1.0.0</version>
+        </dependency>
         <!-- Apache HttpClient -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>

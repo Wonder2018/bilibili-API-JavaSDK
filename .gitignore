@@ -31,4 +31,5 @@ buildNumber.properties
 # WonderTest
 #
 
-*/record/*
+**/record/**
+private/

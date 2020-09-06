@@ -3,13 +3,14 @@ package top.imwonder.sdk.bilibili.domain;
 import lombok.Data;
 
 @Data
-public class ApiData {
+public class ApiData<T> {
 
-    private Double code;
+    private Integer code;
 
     private String message;
 
-    private Double ttl;
+    private Integer ttl;
 
-    private Object data;
+    private T data;
+
 }
