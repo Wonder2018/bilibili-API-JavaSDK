@@ -6,48 +6,22 @@
  */
 package top.imwonder.sdk.bilibili.login;
 
-import org.apache.http.Header;
-import org.apache.http.HeaderElement;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 
 import lombok.Getter;
-import top.imwonder.sdk.bilibili.domain.User;
+import top.imwonder.sdk.bilibili.domain.AbstractPassport;
 
-public abstract class AbstractLogin {
+public abstract class AbstractLogin<T extends AbstractPassport> {
 
     /** 登录成功的用户 */
     @Getter
-    protected User user;
+    protected final T bilibiliAuth;
 
     /** 虚拟客户端 */
-    protected CloseableHttpClient httpClient;
+    protected final CloseableHttpClient httpClient;
 
-    public AbstractLogin() {
-        this.httpClient = HttpClients.createDefault();
-    }
-
-    protected void success(Header[] headers) {
-        user = new User();
-        for (Header header : headers) {
-            HeaderElement firstElement = header.getElements()[0];
-            switch (firstElement.getName()) {
-                case "DedeUserID":
-                    user.setUID(Integer.valueOf(firstElement.getValue()));
-                    break;
-                case "DedeUserID__ckMd5":
-                    user.setUidCheckMD5(firstElement.getValue());
-                    break;
-                case "SESSDATA":
-                    user.setSessdata(firstElement.getValue());
-                    break;
-                case "bili_jct":
-                    user.setCsrfToken(firstElement.getValue());
-                    break;
-                default:
-                    break;
-            }
-        }
-        user.setClient(httpClient);
+    protected AbstractLogin(T bilibiliAuth) {
+        this.bilibiliAuth = bilibiliAuth;
+        this.httpClient = bilibiliAuth.getClient();
     }
 }

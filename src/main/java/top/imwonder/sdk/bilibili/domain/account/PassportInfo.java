@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import top.imwonder.sdk.bilibili.domain.AbstractData;
 import top.imwonder.sdk.bilibili.domain.account.safe.AccountInfo;
 import top.imwonder.sdk.bilibili.domain.account.safe.AccountOther;
 import top.imwonder.sdk.bilibili.domain.account.safe.AccountSafe;
@@ -11,7 +12,7 @@ import top.imwonder.sdk.bilibili.domain.account.safe.AccountSns;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class PassportInfo {
+public class PassportInfo extends AbstractData {
 
     @SerializedName("account_info")
     private AccountInfo accountInfo;

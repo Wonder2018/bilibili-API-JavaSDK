@@ -12,6 +12,7 @@ import org.apache.http.util.EntityUtils;
 import org.junit.Test;
 
 import top.imwonder.sdk.bilibili.domain.ApiData;
+import top.imwonder.sdk.bilibili.domain.User;
 import top.imwonder.sdk.bilibili.domain.loginsimpleinfo.LoginUserInfo;
 import top.imwonder.sdk.bilibili.enumeration.QrCodeStatus;
 import top.imwonder.sdk.bilibili.login.QrCodeLogin;
@@ -22,7 +23,7 @@ public class QrCodeLoginTest {
 
     // @Test
     public void loginForPathTest() throws WriterException {
-        QrCodeLogin qcl = new QrCodeLogin();
+        QrCodeLogin<User> qcl = new QrCodeLogin<User>(new User());
         qcl.loginForPath();
         // ConsoleQrCode.qrTest(path);
     }
@@ -40,7 +41,7 @@ public class QrCodeLoginTest {
         Thread.sleep(1000);
         System.out.println("还剩 1s 开始测试...");
         Thread.sleep(1000);
-        QrCodeLogin qcl = new QrCodeLogin();
+        QrCodeLogin<User> qcl = new QrCodeLogin<User>(new User());
         String path = qcl.loginForPath();
         assertEquals(QrCodeStatus.WAITING_FOR_SCAN, qcl.refreshStatus());
         ConsoleQrCode.qrTest(path);
@@ -71,7 +72,7 @@ public class QrCodeLoginTest {
         System.out.println("测试完毕!");
         HttpGet get = new HttpGet("https://api.bilibili.com/x/web-interface/nav");
         HttpRequestUtil.setComonHeader(get);
-        try (CloseableHttpResponse res = qcl.getUser().getClient().execute(get)) {
+        try (CloseableHttpResponse res = qcl.getBilibiliAuth().getClient().execute(get)) {
             String json = EntityUtils.toString(res.getEntity());
             System.out.println(json);
             ApiData<LoginUserInfo> apiData = new Gson().fromJson(json, new TypeToken<ApiData<LoginUserInfo>>() {

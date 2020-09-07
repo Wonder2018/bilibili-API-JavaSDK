@@ -4,10 +4,11 @@ import com.google.gson.annotations.SerializedName;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import top.imwonder.sdk.bilibili.domain.AbstractData;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class ExpRewardInfo {
+public class ExpRewardInfo extends AbstractData {
 
     private Boolean login;
 

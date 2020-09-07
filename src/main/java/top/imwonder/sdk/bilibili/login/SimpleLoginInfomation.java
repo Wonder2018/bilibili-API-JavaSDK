@@ -8,7 +8,7 @@ package top.imwonder.sdk.bilibili.login;
 
 import static top.imwonder.sdk.bilibili.util.HttpRequestUtil.loadInfo;
 
-import top.imwonder.sdk.bilibili.domain.User;
+import top.imwonder.sdk.bilibili.domain.AbstractPassport;
 import top.imwonder.sdk.bilibili.domain.loginsimpleinfo.LoginUserInfo;
 import top.imwonder.sdk.bilibili.domain.loginsimpleinfo.NavState;
 import top.imwonder.sdk.bilibili.exception.HttpRequestFailedException;
@@ -22,15 +22,16 @@ public class SimpleLoginInfomation {
     /**
      * 获取全部登录信息
      *
-     * @param user 已登录的用户（{@link top.imwonder.sdk.bilibili.domain.User User}）
+     * @param bilibiliAuth 已登录的用户（{@link top.imwonder.sdk.bilibili.domain.AbstractPassport
+     *                     AbstractPassport}）
      * @return 用户信息（{@link top.imwonder.sdk.bilibili.domain.loginsimpleinfo.LoginUserInfo
      *         UserInfo}）
      * @throws HttpRequestFailedException 传入的
-     *                                    {@link top.imwonder.sdk.bilibili.domain.User
-     *                                    User} 未登录时抛出。
+     *                                    {@link top.imwonder.sdk.bilibili.domain.AbstractPassport
+     *                                    AbstractPassport} 未登录时抛出。
      */
-    public static LoginUserInfo loadFullInfo(User user) throws HttpRequestFailedException {
-        return loadInfo(user, FULL_INFO_API);
+    public static LoginUserInfo loadFullInfo(AbstractPassport bilibiliAuth) throws HttpRequestFailedException {
+        return loadInfo(bilibiliAuth, FULL_INFO_API);
     }
 
     /**
@@ -38,57 +39,65 @@ public class SimpleLoginInfomation {
      * 并填到传入的{@link top.imwonder.sdk.bilibili.domain.loginsimpleinfo.LoginUserInfo
      * UserInfo}
      *
-     * @param user     已登录的用户（{@link top.imwonder.sdk.bilibili.domain.User User}）
-     * @param userInfo 要装载的
-     *                 {@link top.imwonder.sdk.bilibili.domain.loginsimpleinfo.LoginUserInfo
-     *                 UserInfo}
-     * @param isCover  是否覆盖原数据
-     * @throws HttpRequestFailedException传入的 {@link top.imwonder.sdk.bilibili.domain.User
-     *                                       User} 未登录时抛出。
+     * @param bilibiliAuth 已登录的用户（{@link top.imwonder.sdk.bilibili.domain.AbstractPassport
+     *                     AbstractPassport}）
+     * @param userInfo     要装载的
+     *                     {@link top.imwonder.sdk.bilibili.domain.loginsimpleinfo.LoginUserInfo
+     *                     UserInfo}
+     * @param isCover      是否覆盖原数据
+     * @throws HttpRequestFailedException 传入的
+     *                                    {@link top.imwonder.sdk.bilibili.domain.AbstractPassport
+     *                                    AbstractPassport} 未登录时抛出。
      */
-    public static void loadFullInfo(User user, LoginUserInfo userInfo, boolean isCover)
+    public static void loadFullInfo(AbstractPassport bilibiliAuth, LoginUserInfo userInfo, boolean isCover)
             throws HttpRequestFailedException {
-        userInfo.copyFrom(loadInfo(user, FULL_INFO_API), isCover);
+        userInfo.copyFrom(loadInfo(bilibiliAuth, FULL_INFO_API), isCover);
     }
 
     /**
      * 鼠标悬浮头像时展示的用户信息
      *
-     * @param user 已登录的用户（{@link top.imwonder.sdk.bilibili.domain.User User}）
+     * @param bilibiliAuth 已登录的用户（{@link top.imwonder.sdk.bilibili.domain.AbstractPassport
+     *                     AbstractPassport}）
      * @return 用户信息（{@link top.imwonder.sdk.bilibili.domain.loginsimpleinfo.LoginUserInfo
      *         UserInfo}）
      * @throws HttpRequestFailedException 传入的
-     *                                    {@link top.imwonder.sdk.bilibili.domain.User
-     *                                    User} 未登录时抛出。
+     *                                    {@link top.imwonder.sdk.bilibili.domain.AbstractPassport
+     *                                    AbstractPassport} 未登录时抛出。
      */
-    public static LoginUserInfo loadPartInfo(User user) throws HttpRequestFailedException {
-        return loadInfo(user, PART_INFO_API);
+    public static LoginUserInfo loadPartInfo(AbstractPassport bilibiliAuth) throws HttpRequestFailedException {
+        return loadInfo(bilibiliAuth, PART_INFO_API);
     }
 
     /**
      * 鼠标悬浮头像时展示的用户信息
      *
-     * @param user 已登录的用户（{@link top.imwonder.sdk.bilibili.domain.User User}）
+     * @param bilibiliAuth 已登录的用户（{@link top.imwonder.sdk.bilibili.domain.AbstractPassport
+     *                     AbstractPassport}）
+     * @param userInfo     要装载的
+     *                     {@link top.imwonder.sdk.bilibili.domain.loginsimpleinfo.LoginUserInfo
+     *                     UserInfo}
+     * @param isCover      是否覆盖原数据
      * @throws HttpRequestFailedException 传入的
-     *                                    {@link top.imwonder.sdk.bilibili.domain.User
-     *                                    User} 未登录时抛出。
+     *                                    {@link top.imwonder.sdk.bilibili.domain.AbstractPassport
+     *                                    AbstractPassport} 未登录时抛出。
      */
-    public static void loadPartInfo(User user, LoginUserInfo userInfo, boolean isCover)
+    public static void loadPartInfo(AbstractPassport bilibiliAuth, LoginUserInfo userInfo, boolean isCover)
             throws HttpRequestFailedException {
-        userInfo.copyFrom(loadInfo(user, PART_INFO_API), isCover);
+        userInfo.copyFrom(loadInfo(bilibiliAuth, PART_INFO_API), isCover);
     }
 
-    public static NavState loadNavState(User user) throws HttpRequestFailedException {
-        return loadInfo(user, NAV_STATE_API);
+    public static NavState loadNavState(AbstractPassport bilibiliAuth) throws HttpRequestFailedException {
+        return loadInfo(bilibiliAuth, NAV_STATE_API);
     }
 
-    public static void loadNavState(User user, LoginUserInfo userInfo, boolean isCover)
+    public static void loadNavState(AbstractPassport bilibiliAuth, LoginUserInfo userInfo, boolean isCover)
             throws HttpRequestFailedException {
         NavState navState = userInfo.getNavState();
         if (navState == null) {
-            userInfo.setNavState(loadInfo(user, NAV_STATE_API));
+            userInfo.setNavState(loadInfo(bilibiliAuth, NAV_STATE_API));
         } else {
-            userInfo.getNavState().copyFrom(loadInfo(user, NAV_STATE_API), isCover);
+            userInfo.getNavState().copyFrom(loadInfo(bilibiliAuth, NAV_STATE_API), isCover);
         }
     }
 

@@ -27,16 +27,21 @@
 
 ---
 
-计划整理分类&目录：
+### 计划整理分类&目录：
 
 -   [ ] API 认证与鉴权
+-   [ ] 公共错误码
 -   [ ] 图片格式化
--   [ ] 登录
-    -   [x] 二维码登录
-    -   [ ] 密码&短信登录
-    -   [ ] qq&微博登录
+-   [ ] 登录操作
+    -   [ ] 登录
+    -   -   [ ] 人机认证
+        -   [ ] 短信登录
+        -   [ ] 密码登录
+        -   [x] 二维码登录
+        -   [ ] SNS 登录（qq&微博）
     -   [x] 登录基本信息
     -   [ ] 个人中心
+    -   [ ] 注销
 -   [ ] 消息中心
     -   [ ] 通知类消息
     -   [ ] 私信
@@ -65,12 +70,14 @@
     -   [ ] 操作
 -   [ ] 视频弹幕
     -   [ ] protobuf 实时弹幕
+    -   [ ] protobuf 云推荐弹幕
     -   [ ] xml 实时弹幕
     -   [ ] xml 历史弹幕
     -   [ ] 快照
     -   [ ] 弹幕操作
     -   [ ] 高级弹幕
-    -   [ ] 屏蔽管理
+    -   [ ] 屏蔽弹幕
+    -   [ ] 智能防挡弹幕
 -   [ ] 专栏
     -   [ ] 分区
     -   [ ] 基本信息
@@ -89,12 +96,15 @@
 -   [ ] 搜索
     -   [ ] 搜索请求
     -   [ ] 搜索结果
-    -   [ ] 热搜
+    -   [ ] 默认搜索&热搜
     -   [ ] 搜索建议
 -   [ ] 小黑屋
     -   [ ] 基本信息
     -   [ ] 封禁公示
-    -   [ ] 仲裁信息
+    -   [ ] 风纪委员及众裁案件相关
+        -   [ ] 风纪委员基本信息
+        -   [ ] 众裁案件基本信息
+        -   [ ] 裁决操作
 -   [ ] 评论区
     -   [ ] 评论区明细
     -   [ ] 操作
@@ -105,8 +115,7 @@
     -   [ ] 统计与数据
     -   [ ] 列表查询相关
     -   [ ] 电磁力数据
--   [ ] 实时广播
-    -   [ ] 总则
+-   [ ] 实时广播（通讯协议）
     -   [ ] 视频内广播
 -   [ ] 充电
     -   [ ] B 币方式
@@ -147,7 +156,13 @@
 -   [ ] 其他
     -   [ ] 基于 ip 的地理位置查询
     -   [ ] 获取当前时间戳
-    -   [ ] 分区在线人数
+-   [ ] web 端组件
+    -   [ ] 分区当日上传数
+-   [ ] APP 端组件
+    -   [ ] 开屏图片
+-   [ ] 个性装扮
+    -   [ ] 主题及加载动画
+    -   [ ] 主题色
 
 ---
 
@@ -189,40 +204,62 @@
 
 **Powered with ❤ by [Wonder2020](http://www.imwonder.top)**
 
-**相关项目**：
+### 相关项目
 
-库及文档：
+1. 库及文档：
 
-**https://github.com/SocialSisterYi/bilibili-API-collect** **!trunk**
+    **https://github.com/SocialSisterYi/bilibili-API-collect** **!trunk**
 
-https://github.com/jingyuexing/bilibiliAPI
+    https://github.com/jingyuexing/bilibiliAPI
 
-https://github.com/fython/BilibiliAPIDocs
+    https://github.com/fython/BilibiliAPIDocs
 
-https://github.com/czp3009/bilibili-api
+    https://github.com/czp3009/bilibili-api
 
-https://github.com/Vespa314/bilibili-api
+    https://github.com/Vespa314/bilibili-api
 
-https://github.com/Hsury/Bilibili-Toolkit
+    https://github.com/Hsury/Bilibili-Toolkit
 
-https://github.com/adachi-sakura/openbilibili-go-common-1
+    https://github.com/whjstc/openbilibili-go-common-1
 
-成品：
+    https://github.com/wnstar/bili-utils
 
-https://github.com/zyzsdy/biliroku
+    https://github.com/lovelyyoshino/Bilibili-Live-API
 
-https://github.com/bilibili-helper/bilibili-helper-o
+    https://github.com/flaribbit/bilibili-manga-spider
 
-https://github.com/apachecn/BiliDriveEx
+    https://github.com/simon300000/bili-api
 
-https://github.com/apachecn/CDNDrive
+2. 成品：
 
-https://github.com/Hsury/BiliDrive
+    https://github.com/3Shain/BiliChat
 
-https://github.com/Tsuk1ko/bilibili-live-chat
+    https://github.com/AncientLysine/BiliLocal
 
-其他：
+    https://github.com/zyzsdy/biliroku
 
-https://github.com/Hsury/Geetest3-Crack
+    https://github.com/otakustay/danmaku-to-ass
 
-https://github.com/SocialSisterYi/bv2av_convert
+    https://github.com/bilibili-helper/bilibili-helper-o
+
+    https://github.com/apachecn/BiliDriveEx
+
+    https://github.com/apachecn/CDNDrive
+
+    https://github.com/Hsury/BiliDrive
+
+    https://github.com/Tsuk1ko/bilibili-live-chat
+
+    https://github.com/ironmanic/crawler_target_users_good
+
+    https://github.com/dd-center/DDatElectron
+
+    https://github.com/dd-center/vtbs.moe
+
+3. 其他：
+
+    https://github.com/kuresaru/geetest-validator
+
+    https://github.com/Hsury/Geetest3-Crack
+
+    https://github.com/SocialSisterYi/bv2av_convert

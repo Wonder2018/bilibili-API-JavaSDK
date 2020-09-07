@@ -4,10 +4,11 @@ import com.google.gson.annotations.SerializedName;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import top.imwonder.sdk.bilibili.domain.AbstractData;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class AccountInfo {
+public class AccountInfo extends AbstractData {
 
     @SerializedName("hide_tel")
     private String hideTel;

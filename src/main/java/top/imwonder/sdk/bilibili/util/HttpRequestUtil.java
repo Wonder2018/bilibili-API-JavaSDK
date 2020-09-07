@@ -32,8 +32,8 @@ import org.apache.http.util.EntityUtils;
 
 import lombok.extern.slf4j.Slf4j;
 import top.imwonder.sdk.bilibili.domain.AbstractData;
+import top.imwonder.sdk.bilibili.domain.AbstractPassport;
 import top.imwonder.sdk.bilibili.domain.ApiData;
-import top.imwonder.sdk.bilibili.domain.User;
 import top.imwonder.sdk.bilibili.exception.HttpRequestFailedException;
 import top.imwonder.util.MessageUtil;
 
@@ -235,8 +235,8 @@ public class HttpRequestUtil {
      * ApiData}&lt;{@link top.imwonder.sdk.bilibili.domain.AbstractData T&nbsp;
      * extends &nbsp AbstractData}&gt;。
      *
-     * @param <T>
-     * @param user 登录用户
+     * @param <T> AbstractData
+     * @param bilibiliAuth 登录用户
      * @param api  登录接口
      * @return {@link top.imwonder.sdk.bilibili.domain.ApiData
      *         ApiData}&lt;{@link top.imwonder.sdk.bilibili.domain.AbstractData
@@ -245,10 +245,10 @@ public class HttpRequestUtil {
      *
      * @see top.imwonder.sdk.bilibili.util.HttpRequestUtil#toApiData(HttpResponse, Type)
      */
-    public static <T extends AbstractData> T loadInfo(User user, String api) throws HttpRequestFailedException {
+    public static <T extends AbstractData> T loadInfo(AbstractPassport bilibiliAuth, String api) throws HttpRequestFailedException {
         HttpGet get = new HttpGet(api);
         HttpRequestUtil.setComonHeader(get);
-        try (CloseableHttpResponse res = user.getClient().execute(get)) {
+        try (CloseableHttpResponse res = bilibiliAuth.getClient().execute(get)) {
             ApiData<T> result = HttpRequestUtil.toApiData(res, new TypeToken<ApiData<T>>() {
             }.getType());
             return result.getData();

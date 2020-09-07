@@ -23,6 +23,7 @@ import org.apache.http.client.utils.URIBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import top.imwonder.sdk.bilibili.domain.AbstractPassport;
 import top.imwonder.sdk.bilibili.enumeration.QrCodeStatus;
 import top.imwonder.sdk.bilibili.exception.BadResultException;
 import top.imwonder.sdk.bilibili.exception.HttpRequestFailedException;
@@ -36,7 +37,7 @@ import top.imwonder.util.MessageUtil;
  */
 @Slf4j
 @Getter
-public final class QrCodeLogin extends AbstractLogin implements Runnable {
+public final class QrCodeLogin<T extends AbstractPassport> extends AbstractLogin<T> implements Runnable {
 
     /** 获取二维码API */
     public final static String GET_QR_CODE_URL = "https://passport.bilibili.com/qrcode/getLoginUrl";
@@ -46,7 +47,7 @@ public final class QrCodeLogin extends AbstractLogin implements Runnable {
 
     /** 自动二维码登录事务 */
     @Setter
-    private QrCodeLoginTask qrLoginTask;
+    private QrCodeLoginTask<T> qrLoginTask;
 
     /** 二维码大小，默认 300px */
     @Setter
@@ -69,6 +70,10 @@ public final class QrCodeLogin extends AbstractLogin implements Runnable {
 
     /** 二维码图片 */
     private BufferedImage qrCode;
+
+    public QrCodeLogin(T bilibiliAuth){
+        super(bilibiliAuth);
+    }
 
     /**
      * 获取登录二维码
@@ -139,7 +144,7 @@ public final class QrCodeLogin extends AbstractLogin implements Runnable {
                 state = QrCodeStatus.query((Double) data);
             } else if (data instanceof Map) {
                 Header headers[] = res.getHeaders("Set-Cookie");
-                success(headers);
+                bilibiliAuth.success(headers);
                 state = QrCodeStatus.SUCCESS;
             }
             return state;
@@ -167,8 +172,8 @@ public final class QrCodeLogin extends AbstractLogin implements Runnable {
      * @param task 二维码登录任务 {@link top.imwonder.sdk.bilibili.login.QrCodeLoginTask
      *             QrCodeLoginTask}
      */
-    public void syncAutoCheck(QrCodeLoginTask task) {
-        syncAutoCheck(task, 3000);
+    public T syncAutoCheck(QrCodeLoginTask<T> task) {
+        return syncAutoCheck(task, 3000);
     }
 
     /**
@@ -179,10 +184,10 @@ public final class QrCodeLogin extends AbstractLogin implements Runnable {
      *             QrCodeLoginTask}
      * @param freq 检查二维码状态的频率，单位为 ms。
      */
-    public void syncAutoCheck(QrCodeLoginTask task, long freq) {
+    public T syncAutoCheck(QrCodeLoginTask<T> task, long freq) {
         if (task == null) {
             log.warn(MessageUtil.getMsg("login.qrcode.warn.notask"));
-            return;
+            return null;
         }
         while (true) {
             try {
@@ -198,7 +203,7 @@ public final class QrCodeLogin extends AbstractLogin implements Runnable {
                         task.scanned();
                     }
                 }
-                task.success(user);
+                task.success(bilibiliAuth);
                 break;
             } catch (WriterException e) {
                 log.info(MessageUtil.getMsg("error.unexpected"));
@@ -207,6 +212,7 @@ public final class QrCodeLogin extends AbstractLogin implements Runnable {
                 break;
             }
         }
+        return bilibiliAuth;
     }
 
 }

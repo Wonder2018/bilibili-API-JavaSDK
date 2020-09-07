@@ -8,10 +8,10 @@ package top.imwonder.sdk.bilibili.login;
 
 import java.awt.image.BufferedImage;
 
-import top.imwonder.sdk.bilibili.domain.User;
+import top.imwonder.sdk.bilibili.domain.AbstractPassport;
 
 /** 二维码登录任务接口 */
-public interface QrCodeLoginTask {
+public interface QrCodeLoginTask<T extends AbstractPassport> {
 
     /**
      * 成功获取到二维码时执行。
@@ -26,9 +26,9 @@ public interface QrCodeLoginTask {
     /**
      * 成功登录时执行。
      *
-     * @param user 已经登录的 {@link top.imwonder.sdk.bilibili.domain.User User} 对象
+     * @param bilibiliAuth 已经登录的 {@link top.imwonder.sdk.bilibili.domain.User User} 对象
      */
-    public void success(User user);
+    public void success(T bilibiliAuth);
 
     /**
      * 异常处理
