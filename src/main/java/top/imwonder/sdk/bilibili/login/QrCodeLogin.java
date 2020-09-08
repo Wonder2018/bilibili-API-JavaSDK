@@ -27,6 +27,7 @@ import top.imwonder.sdk.bilibili.domain.AbstractPassport;
 import top.imwonder.sdk.bilibili.enumeration.QrCodeStatus;
 import top.imwonder.sdk.bilibili.exception.BadResultException;
 import top.imwonder.sdk.bilibili.exception.HttpRequestFailedException;
+import top.imwonder.sdk.bilibili.login.task.QrCodeLoginTask;
 import top.imwonder.sdk.bilibili.util.HttpRequestUtil;
 import top.imwonder.sdk.bilibili.util.QrCodeUtil;
 import top.imwonder.util.MessageUtil;
@@ -141,7 +142,7 @@ public final class QrCodeLogin<T extends AbstractPassport> extends AbstractLogin
             scanTime = (long) (result.get("ts") == null ? 0 : (double) result.get("ts"));
             Object data = result.get("data");
             if (data instanceof Number) {
-                state = QrCodeStatus.query((Double) data);
+                state = QrCodeStatus.query((Integer) data);
             } else if (data instanceof Map) {
                 Header headers[] = res.getHeaders("Set-Cookie");
                 bilibiliAuth.success(headers);

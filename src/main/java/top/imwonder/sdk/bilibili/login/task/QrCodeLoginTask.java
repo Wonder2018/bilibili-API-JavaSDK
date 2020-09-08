@@ -4,7 +4,7 @@
  * @Last Modified by:   Wonder2019
  * @Last Modified time: 2020-09-06 14:20:34
  */
-package top.imwonder.sdk.bilibili.login;
+package top.imwonder.sdk.bilibili.login.task;
 
 import java.awt.image.BufferedImage;
 
@@ -19,6 +19,13 @@ public interface QrCodeLoginTask<T extends AbstractPassport> {
      * @param qrCode 二维码文件
      */
     public void ready(BufferedImage qrCode);
+
+    /**
+     * 二维码过期刷新时执行。
+     *
+     * @param qrCode 二维码文件
+     */
+    public void reload(BufferedImage qrCode);
 
     /** 二维码被扫描时执行。 */
     public void scanned();

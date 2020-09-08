@@ -7,14 +7,14 @@ import lombok.Getter;
 
 @Getter
 public enum QrCodeStatus {
-    WRONG_KEY(-1d, "密钥不存在"), TIMEOUT_KEY(-2d, "密钥已过期"), WAITING_FOR_SCAN(-4d, "等待扫描"), WAITING_FOR_CONFIRM(-5d, "等待确认"),
-    SUCCESS(200d, "成功登录");
+    WRONG_KEY(-1, "密钥不存在"), TIMEOUT_KEY(-2, "密钥已过期"), WAITING_FOR_SCAN(-4, "等待扫描"), WAITING_FOR_CONFIRM(-5, "等待确认"),
+    SUCCESS(200, "成功登录");
 
-    private final Double code;
+    private final Integer code;
 
     private final String state;
 
-    private static Map<Double, QrCodeStatus> enumMap;
+    private static Map<Integer, QrCodeStatus> enumMap;
 
     static {
         enumMap = new HashMap<>();
@@ -23,12 +23,12 @@ public enum QrCodeStatus {
         }
     }
 
-    QrCodeStatus(Double code, String state) {
+    QrCodeStatus(Integer code, String state) {
         this.code = code;
         this.state = state;
     }
 
-    public static QrCodeStatus query(Double code) {
+    public static QrCodeStatus query(Integer code) {
         return enumMap.get(code);
     }
 

@@ -235,20 +235,20 @@ public class HttpRequestUtil {
      * ApiData}&lt;{@link top.imwonder.sdk.bilibili.domain.AbstractData T&nbsp;
      * extends &nbsp AbstractData}&gt;。
      *
-     * @param <T> AbstractData
+     * @param <T>          AbstractData
      * @param bilibiliAuth 登录用户
-     * @param api  登录接口
+     * @param req          Http请求
      * @return {@link top.imwonder.sdk.bilibili.domain.ApiData
      *         ApiData}&lt;{@link top.imwonder.sdk.bilibili.domain.AbstractData
      *         T&nbsp; extends &nbsp AbstractData}&gt;
      * @throws HttpRequestFailedException 用户未登录时抛出
      *
-     * @see top.imwonder.sdk.bilibili.util.HttpRequestUtil#toApiData(HttpResponse, Type)
+     * @see top.imwonder.sdk.bilibili.util.HttpRequestUtil#toApiData(HttpResponse,
+     *      Type)
      */
-    public static <T extends AbstractData> T loadInfo(AbstractPassport bilibiliAuth, String api) throws HttpRequestFailedException {
-        HttpGet get = new HttpGet(api);
-        HttpRequestUtil.setComonHeader(get);
-        try (CloseableHttpResponse res = bilibiliAuth.getClient().execute(get)) {
+    public static <T extends AbstractData> T loadInfo(AbstractPassport bilibiliAuth, HttpRequestBase req)
+            throws HttpRequestFailedException {
+        try (CloseableHttpResponse res = bilibiliAuth.getClient().execute(req)) {
             ApiData<T> result = HttpRequestUtil.toApiData(res, new TypeToken<ApiData<T>>() {
             }.getType());
             return result.getData();
@@ -260,6 +260,37 @@ public class HttpRequestUtil {
             log.debug(MessageUtil.getMsg("error.debug.simple", e.getMessage()));
         } catch (NullPointerException e) {
             throw new HttpRequestFailedException(MessageUtil.getMsg("login.userinfo.nologin"));
+        }
+        throw new HttpRequestFailedException(MessageUtil.getMsg("error.unexpected"));
+    }
+
+    /**
+     * 使用公共虚拟浏览器发送请求，{@link top.imwonder.sdk.bilibili.util.HttpRequestUtil#resetHttpClient()
+     * HttpClient}并将json回复反序列化为封装的{@link top.imwonder.sdk.bilibili.domain.ApiData
+     * ApiData}&lt;{@link top.imwonder.sdk.bilibili.domain.AbstractData T&nbsp;
+     * extends &nbsp AbstractData}&gt;。
+     *
+     * @param <T> AbstractData
+     * @param api 登录接口
+     * @return {@link top.imwonder.sdk.bilibili.domain.ApiData
+     *         ApiData}&lt;{@link top.imwonder.sdk.bilibili.domain.AbstractData
+     *         T&nbsp; extends &nbsp AbstractData}&gt;
+     * @throws HttpRequestFailedException 用户未登录时抛出
+     *
+     * @see top.imwonder.sdk.bilibili.util.HttpRequestUtil#toApiData(HttpResponse,
+     *      Type)
+     */
+    public static <T extends AbstractData> T loadInfo(HttpRequestBase req) throws HttpRequestFailedException {
+        try (CloseableHttpResponse res = doRequest(req, false)) {
+            ApiData<T> result = HttpRequestUtil.toApiData(res, new TypeToken<ApiData<T>>() {
+            }.getType());
+            return result.getData();
+        } catch (ClientProtocolException e) {
+            log.info(MessageUtil.getMsg("error.unexpected"));
+            log.debug(MessageUtil.getMsg("error.debug.simple", e.getMessage()));
+        } catch (IOException e) {
+            log.info(MessageUtil.getMsg("error.unexpected"));
+            log.debug(MessageUtil.getMsg("error.debug.simple", e.getMessage()));
         }
         throw new HttpRequestFailedException(MessageUtil.getMsg("error.unexpected"));
     }

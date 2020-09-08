@@ -1,4 +1,4 @@
-package top.imwonder.utilTest;
+package top.imwonder.utiltest;
 
 import static org.junit.Assert.assertEquals;
 

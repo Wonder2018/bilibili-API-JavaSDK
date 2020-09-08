@@ -8,10 +8,13 @@ package top.imwonder.sdk.bilibili.login;
 
 import static top.imwonder.sdk.bilibili.util.HttpRequestUtil.loadInfo;
 
+import org.apache.http.client.methods.HttpGet;
+
 import top.imwonder.sdk.bilibili.domain.AbstractPassport;
 import top.imwonder.sdk.bilibili.domain.loginsimpleinfo.LoginUserInfo;
 import top.imwonder.sdk.bilibili.domain.loginsimpleinfo.NavState;
 import top.imwonder.sdk.bilibili.exception.HttpRequestFailedException;
+import top.imwonder.sdk.bilibili.util.HttpRequestUtil;
 
 public class SimpleLoginInfomation {
 
@@ -31,7 +34,9 @@ public class SimpleLoginInfomation {
      *                                    AbstractPassport} 未登录时抛出。
      */
     public static LoginUserInfo loadFullInfo(AbstractPassport bilibiliAuth) throws HttpRequestFailedException {
-        return loadInfo(bilibiliAuth, FULL_INFO_API);
+        HttpGet get = new HttpGet(FULL_INFO_API);
+        HttpRequestUtil.setComonHeader(get);
+        return loadInfo(bilibiliAuth, get);
     }
 
     /**
@@ -51,7 +56,9 @@ public class SimpleLoginInfomation {
      */
     public static void loadFullInfo(AbstractPassport bilibiliAuth, LoginUserInfo userInfo, boolean isCover)
             throws HttpRequestFailedException {
-        userInfo.copyFrom(loadInfo(bilibiliAuth, FULL_INFO_API), isCover);
+        HttpGet get = new HttpGet(FULL_INFO_API);
+        HttpRequestUtil.setComonHeader(get);
+        userInfo.copyFrom(loadInfo(bilibiliAuth, get), isCover);
     }
 
     /**
@@ -66,7 +73,9 @@ public class SimpleLoginInfomation {
      *                                    AbstractPassport} 未登录时抛出。
      */
     public static LoginUserInfo loadPartInfo(AbstractPassport bilibiliAuth) throws HttpRequestFailedException {
-        return loadInfo(bilibiliAuth, PART_INFO_API);
+        HttpGet get = new HttpGet(PART_INFO_API);
+        HttpRequestUtil.setComonHeader(get);
+        return loadInfo(bilibiliAuth, get);
     }
 
     /**
@@ -84,20 +93,26 @@ public class SimpleLoginInfomation {
      */
     public static void loadPartInfo(AbstractPassport bilibiliAuth, LoginUserInfo userInfo, boolean isCover)
             throws HttpRequestFailedException {
-        userInfo.copyFrom(loadInfo(bilibiliAuth, PART_INFO_API), isCover);
+        HttpGet get = new HttpGet(PART_INFO_API);
+        HttpRequestUtil.setComonHeader(get);
+        userInfo.copyFrom(loadInfo(bilibiliAuth, get), isCover);
     }
 
     public static NavState loadNavState(AbstractPassport bilibiliAuth) throws HttpRequestFailedException {
-        return loadInfo(bilibiliAuth, NAV_STATE_API);
+        HttpGet get = new HttpGet(NAV_STATE_API);
+        HttpRequestUtil.setComonHeader(get);
+        return loadInfo(bilibiliAuth, get);
     }
 
     public static void loadNavState(AbstractPassport bilibiliAuth, LoginUserInfo userInfo, boolean isCover)
             throws HttpRequestFailedException {
         NavState navState = userInfo.getNavState();
+        HttpGet get = new HttpGet(NAV_STATE_API);
+        HttpRequestUtil.setComonHeader(get);
         if (navState == null) {
-            userInfo.setNavState(loadInfo(bilibiliAuth, NAV_STATE_API));
+            userInfo.setNavState(loadInfo(bilibiliAuth, get));
         } else {
-            userInfo.getNavState().copyFrom(loadInfo(bilibiliAuth, NAV_STATE_API), isCover);
+            userInfo.getNavState().copyFrom(loadInfo(bilibiliAuth, get), isCover);
         }
     }
 

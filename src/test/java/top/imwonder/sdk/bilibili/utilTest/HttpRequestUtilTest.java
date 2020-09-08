@@ -1,4 +1,4 @@
-package top.imwonder.sdk.bilibili.utilTest;
+package top.imwonder.sdk.bilibili.utiltest;
 
 import static org.junit.Assert.assertEquals;
 
